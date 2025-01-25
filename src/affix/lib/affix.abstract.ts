@@ -24,7 +24,7 @@ export abstract class Affix {
    * @description
    * @public
    * @static
-   * @type {{}}
+   * @type {RegExp}
    */
   public static filter = /[^a-zA-Z0-9$_]/g;
 
@@ -40,7 +40,7 @@ export abstract class Affix {
 
   /**
    * @description
-   * @type {{}}
+   * @type {RegExp}
    */
   #filter = Affix.filter;
 

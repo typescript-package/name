@@ -1,13 +1,29 @@
-// Classes.
+// Class.
 import { Prefix } from '../affix/lib/prefix.class';
 import { Suffix } from '../affix/lib/suffix.class';
-
+/**
+ * @description
+ * @export
+ * @abstract
+ * @class CommonName
+ */
 export abstract class CommonName {
-
+  /**
+   * @description
+   * @public
+   * @readonly
+   * @type {string}
+   */
   public get prefix() {
     return this.#prefix.get;
   }
 
+  /**
+   * @description
+   * @public
+   * @readonly
+   * @type {string}
+   */
   public get suffix() {
     return this.#suffix.get;
   }
@@ -24,16 +40,23 @@ export abstract class CommonName {
    */
   #suffix: Suffix = new Suffix();
 
+  /**
+   * Creates an instance of child class.
+   * @constructor
+   * @param {{ prefix?: string, suffix?: string }} [param0={}] 
+   * @param {string} param0.prefix 
+   * @param {string} param0.suffix 
+   */
   constructor({ prefix, suffix }: { prefix?: string, suffix?: string } = {}) {
     typeof prefix === 'string' && this.setPrefix(prefix);
     typeof suffix === 'string' && this.setSuffix(suffix);
   }
-
+  
   /**
-   * Set prefix for the name.
-   * @param prefix A `string` type value as prefix.
-   * @param callback A `ResultCallback` function to handle the result of the check if the prefix is a `string`.
-   * @returns this.
+   * @description Set prefix for the name.
+   * @public
+   * @param {string} prefix A `string` type value as prefix.
+   * @returns {this} 
    */
   public setPrefix(prefix: string): this {
     this.#prefix.set(prefix);
@@ -41,10 +64,10 @@ export abstract class CommonName {
   }
 
   /**
-   * Set suffix for the name.
-   * @param suffix A `string` type value as suffix.
-   * @param callback A `ResultCallback` function to handle the result of the check if the suffix is a `string`.
-   * @returns this.
+   * @description Sets suffix for the name.
+   * @public
+   * @param {string} suffix A `string` type value as suffix.
+   * @returns {this} 
    */
   public setSuffix(suffix: string): this {
     this.#suffix.set(suffix);
