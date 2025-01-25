@@ -25,7 +25,11 @@
   },
   "keywords": [
     "@typescript-package",
-    "@typescript-package/name"
+    "@typescript-package/name",
+    "Affix",
+    "Name",
+    "Prefix",
+    "Suffix"
   ],
   "funding": [
     {
