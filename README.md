@@ -28,6 +28,7 @@ A **lightweight** TypeScript library for the name with prefix and suffix.
   - `Suffix`
   - `Name`
 - [Contributing](#contributing)
+- [Support](#support)
 - [Code of Conduct](code-of-conduct)
 - [Git](#git)
   - [Commit](#commit)
@@ -56,7 +57,18 @@ import {
 
 ## Contributing
 
-Your contributions are **valued**! If you'd like to contribute, please feel **free** to submit a pull request. Help is always appreciated.
+Your contributions are valued! If you'd like to contribute, please feel free to submit a pull request. Help is always appreciated.
+
+## Support
+
+If you find this package useful and would like to support its and general development, you can contribute through one of the following payment methods. Your support helps maintain the packages and continue adding new.
+
+Support via:
+
+- [Stripe](https://donate.stripe.com/dR614hfDZcJE3wAcMM)
+- [Revolut](https://checkout.revolut.com/pay/048b10a3-0e10-42c8-a917-e3e9cb4c8e29)
+
+Thanks for your support!
 
 ## Code of Conduct
 
