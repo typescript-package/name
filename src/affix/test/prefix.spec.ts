@@ -6,6 +6,6 @@ describe(Prefix.name, () => {
   beforeEach(() => namePrefix = new Prefix());
 
   it('is DEFINED', () => expect(namePrefix).toBeDefined());
-  it('initially set prefix to $$', () => expect(new Prefix('$$').get).toEqual('$$'));
-  it('set prefix to $$', () => expect(namePrefix.set('$$').get).toEqual('$$'));
+  it('initially set prefix to $$', () => expect(new Prefix('$$').value).toEqual('$$'));
+  it('set prefix to $$', () => expect(namePrefix.set('$$').value).toEqual('$$'));
 });
