@@ -9,6 +9,17 @@ import { Affix } from "./affix.abstract";
  */
 export class Prefix<Value extends string = string> extends Affix<Value> {
   /**
+   * @description Sanitizes the prefix with a `filter`.
+   * @public
+   * @param {string} value 
+   * @param {RegExp} [filter=Prefix.filter] 
+   * @returns {string} 
+   */
+  public static sanitize(value: string, filter: RegExp = Prefix.filter): string {
+    return value.replace(filter, '');
+  }
+
+  /**
    * @inheritdoc
    * @public
    * @static
