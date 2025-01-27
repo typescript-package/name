@@ -10,9 +10,10 @@ export abstract class Affix<Value extends string = string> {
    * @description Defines the affix sanitized by specified filter.
    * @public
    * @static
-   * @param {string} value An affix of generic type variable `Value` constrained by the `string` type to be sanitized with the `filter`.
+   * @template {string} [Value=string] 
+   * @param {Value} value A value of generic type variable `Value` constrained by the `string` type to be sanitized with the `filter`.
    * @param {RegExp} [filter=Affix.filter] The filter of `RegExp` to sanitize the `affix`. Defaults to static `Affix.filter`.
-   * @returns {string} The returned value is a `string` type affix.
+   * @returns {Value} The returned value is an affix of a generic type variable `Value`, optionally sanitized by the `filter`.
    */
   public static define<Value extends string = string>(
     value: Value,
@@ -69,7 +70,7 @@ export abstract class Affix<Value extends string = string> {
    */
   constructor(value?: Value, filter?: RegExp) {
     filter instanceof RegExp && (this.#filter = filter);
-    typeof value === 'string' && this.set(value);
+    typeof value !== 'undefined' && this.set(value);
   }
 
   /**
@@ -84,7 +85,7 @@ export abstract class Affix<Value extends string = string> {
 
   /**
    * @description Sets and stores privately sanitized affix of generic type variable `Value` constrained by `string` type.
-   * @public
+   * @private
    * @param {Value} value The `affix` of generic type variable `Value`.
    * @param {RegExp} [filter=this.#filter] The filter of `RegExp` to sanitize the `affix`. Defaults to privately stored `#filter`.
    * @returns {this} The returned value is current instance for method chaining.
