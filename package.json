@@ -1,6 +1,6 @@
 {
   "name": "@typescript-package/name",
-  "version": "0.0.1-beta",
+  "version": "1.0.0-beta",
   "author": "wwwdev.io <dev@wwwdev.io>",
   "description": "A lightweight TypeScript library for the name with prefix and suffix.",
   "license": "MIT",
