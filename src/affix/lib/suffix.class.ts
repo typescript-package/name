@@ -15,14 +15,18 @@ export class Suffix<Value extends string = string> extends Affix<Value> {
    * @param {RegExp} [filter=Suffix.filter] 
    * @returns {string} 
    */
-  public static sanitize(value: string, filter: RegExp = Suffix.filter): string {
-    return value.replace(filter, '');
+  public static override sanitize<Value extends string = string>(
+    value: Value,
+    filter: RegExp = Suffix.filter
+  ): Value {
+    return value.replace(filter, '') as Value;
   }
-    /**
+
+  /**
    * @inheritdoc
    * @public
    * @static
    * @type {RegExp}
    */
-  public static override filter: RegExp = /[^a-zA-Z0-9$_-]/g;
+  public static override filter: RegExp = super.filter;
 }

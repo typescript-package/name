@@ -15,8 +15,11 @@ export class Prefix<Value extends string = string> extends Affix<Value> {
    * @param {RegExp} [filter=Prefix.filter] 
    * @returns {string} 
    */
-  public static sanitize(value: string, filter: RegExp = Prefix.filter): string {
-    return value.replace(filter, '');
+  public static override sanitize<Value extends string = string>(
+    value: Value,
+    filter: RegExp = Prefix.filter
+  ): Value {
+    return value.replace(filter, '') as Value;
   }
 
   /**
