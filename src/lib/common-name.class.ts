@@ -1,11 +1,14 @@
 // Classes.
-import { Prefix } from '../affix/lib/prefix.class';
-import { Suffix } from '../affix/lib/suffix.class';
+import { Prefix, Suffix } from '@typescript-package/affix';
+// Type.
+import { NameAffix } from '../type';
 /**
  * @description
  * @export
  * @abstract
  * @class CommonName
+ * @template {string} [PrefixValue=string] 
+ * @template {string} [SuffixValue=string] 
  */
 export abstract class CommonName<
   PrefixValue extends string = string,
@@ -17,7 +20,7 @@ export abstract class CommonName<
    * @readonly
    * @type {Prefix}
    */
-  public get prefix(): Prefix<PrefixValue> {
+  public get prefix() {
     return this.#prefix;
   }
 
@@ -27,7 +30,7 @@ export abstract class CommonName<
    * @readonly
    * @type {Suffix}
    */
-  public get suffix(): Suffix<SuffixValue> {
+  public get suffix() {
     return this.#suffix;
   }
 
@@ -42,46 +45,55 @@ export abstract class CommonName<
    * @type {Suffix}
    */
   #suffix;
-
+  
   /**
    * Creates an instance of child class.
    * @constructor
-   * @param {{ prefix?: PrefixValue, suffix?: SuffixValue }} [param0={}] 
-   * @param {PrefixValue} param0.prefix Optional prefix of generic type variable `PrefixValue` constrained by the `string` type.
-   * @param {SuffixValue} param0.suffix Optional suffix of generic type variable `SuffixValue` constrained by the `string` type.
+   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={}] 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix 
+   * @param {?RegExp} [pattern] 
    */
-  constructor({ prefix, suffix }: { prefix?: PrefixValue, suffix?: SuffixValue } = {}) {
-    this.#prefix = new Prefix(prefix);
-    this.#suffix = new Suffix(suffix);
+  constructor({ prefix, suffix }: NameAffix<PrefixValue, SuffixValue> = {}, pattern?: RegExp) {
+    this.#prefix = prefix instanceof Prefix
+      ? prefix
+      : typeof prefix === 'object' 
+        ? new Prefix(prefix.value, prefix.pattern || pattern)
+        : new Prefix(prefix, pattern);
+    this.#suffix = suffix instanceof Suffix
+      ? suffix
+      : typeof suffix === 'object'
+        ? new Suffix(suffix.value, suffix.pattern || pattern)
+        : new Suffix(suffix, pattern);
   }
   
   /**
-   * @description Sets the prefix for the name.
+   * @description Sets the `prefix` for the name with the `pattern` to sanitize.
    * @public
    * @param {PrefixValue} value The prefix of generic type variable `PrefixValue` constrained by the `string` type.
-   * @param {?RegExp} [filter] Optional filter to sanitize prefix.
+   * @param {?RegExp} [pattern] Optional pattern to sanitize prefix.
    * @returns {this} 
    */
   public setPrefix(
     value: PrefixValue,
-    filter?: RegExp
+    pattern?: RegExp
   ): this {
-    this.#prefix.set(value, filter);
+    this.#prefix.set(value, pattern);
     return this;
   }
 
   /**
-   * @description Sets the suffix for the name.
+   * @description Sets the `suffix` for the name with the `pattern` to sanitize.
    * @public
    * @param {SuffixValue} value The suffix of generic type variable `PrefixValue` constrained by the `string` type.
-   * @param {?RegExp} [filter] Optional filter to sanitize suffix.
+   * @param {?RegExp} [pattern] Optional pattern to sanitize suffix.
    * @returns {this} 
    */
   public setSuffix(
     value: SuffixValue,
-    filter?: RegExp
+    pattern?: RegExp
   ): this {
-    this.#suffix.set(value, filter);
+    this.#suffix.set(value, pattern);
     return this;
   }
 }
