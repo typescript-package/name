@@ -1,6 +1,6 @@
 // Classes.
 import { Prefix, Suffix } from '@typescript-package/affix';
-import { NamePattern } from './name-pattern.class';
+import { NamePattern } from './name-pattern.abstract';
 // Type.
 import { NameAffix } from '../type';
 /**
