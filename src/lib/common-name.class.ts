@@ -1,5 +1,6 @@
 // Classes.
 import { Prefix, Suffix } from '@typescript-package/affix';
+import { NamePattern } from './name-pattern.class';
 // Type.
 import { NameAffix } from '../type';
 /**
@@ -13,7 +14,17 @@ import { NameAffix } from '../type';
 export abstract class CommonName<
   PrefixValue extends string = string,
   SuffixValue extends string = string,
-> {
+> extends NamePattern {
+  /**
+   * @description Returns the `string` tag representation of the `CommonName` class when used in `Object.prototype.toString.call(instance)`.
+   * @public
+   * @readonly
+   * @type {string}
+   */
+  public override get [Symbol.toStringTag]() {
+    return CommonName.name;
+  }
+
   /**
    * @description Returns the `Prefix` instance.
    * @public
@@ -38,13 +49,13 @@ export abstract class CommonName<
    * @description Private namespace for prefix of `Prefix`.
    * @type {Prefix}
    */
-  #prefix;
+  #prefix: Prefix;
   
   /**
    * @description Private namespace for suffix of `Suffix`.
    * @type {Suffix}
    */
-  #suffix;
+  #suffix: Suffix;
   
   /**
    * Creates an instance of child class.
@@ -54,7 +65,11 @@ export abstract class CommonName<
    * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix 
    * @param {?RegExp} [pattern] 
    */
-  constructor({ prefix, suffix }: NameAffix<PrefixValue, SuffixValue> = {}, pattern?: RegExp) {
+  constructor(
+    {prefix, suffix}: NameAffix<PrefixValue, SuffixValue> = {},
+    pattern?: RegExp
+  ) {
+    super(pattern);
     this.#prefix = prefix instanceof Prefix
       ? prefix
       : typeof prefix === 'object' 
@@ -66,7 +81,7 @@ export abstract class CommonName<
         ? new Suffix(suffix.value, suffix.pattern || pattern)
         : new Suffix(suffix, pattern);
   }
-  
+
   /**
    * @description Sets the `prefix` for the name with the `pattern` to sanitize.
    * @public
