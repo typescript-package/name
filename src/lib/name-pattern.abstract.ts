@@ -43,7 +43,7 @@ export abstract class NamePattern {
    * @readonly
    * @type {string}
    */
-  public get pattern() {
+  public get pattern(): RegExp | undefined {
     return this.#pattern;
   }
 
