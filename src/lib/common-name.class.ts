@@ -4,12 +4,12 @@ import { NamePattern } from './name-pattern.abstract';
 // Type.
 import { NameAffix } from '../type';
 /**
- * @description
+ * @description The `CommonName` class is an abstract class that provides a common structure for creating names with prefixes and suffixes.
  * @export
  * @abstract
  * @class CommonName
- * @template {string} [PrefixValue=string] 
- * @template {string} [SuffixValue=string] 
+ * @template {string} [PrefixValue=string] The type of the prefix value, constrained by a `string` type.
+ * @template {string} [SuffixValue=string] The type of the suffix value, constrained by a `string` type.
  */
 export abstract class CommonName<
   PrefixValue extends string = string,
@@ -26,44 +26,44 @@ export abstract class CommonName<
   }
 
   /**
-   * @description Returns the `Prefix` instance.
+   * @description Returns the `Prefix<PrefixValue>` instance.
    * @public
    * @readonly
-   * @type {Prefix}
+   * @type {Prefix<PrefixValue>}
    */
-  public get prefix() {
+  public get prefix(): Prefix<PrefixValue> {
     return this.#prefix;
   }
 
   /**
-   * @description Returns the `Suffix` instance.
+   * @description Returns the `Suffix<SuffixValue>` instance.
    * @public
    * @readonly
-   * @type {Suffix}
+   * @type {Suffix<SuffixValue>}
    */
-  public get suffix() {
+  public get suffix(): Suffix<SuffixValue> {
     return this.#suffix;
   }
 
   /**
    * @description Private namespace for prefix of `Prefix`.
-   * @type {Prefix}
+   * @type {Prefix<PrefixValue>}
    */
-  #prefix: Prefix;
+  #prefix: Prefix<PrefixValue>;
   
   /**
    * @description Private namespace for suffix of `Suffix`.
-   * @type {Suffix}
+   * @type {Suffix<SuffixValue>}
    */
-  #suffix: Suffix;
-  
+  #suffix: Suffix<SuffixValue>;
+
   /**
-   * Creates an instance of child class.
+   * Creates an instance of `CommonName` child class.
    * @constructor
    * @param {NameAffix<PrefixValue, SuffixValue>} [param0={}] 
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix 
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix 
-   * @param {?RegExp} [pattern] 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`. 
+   * @param {?RegExp} [pattern] The pattern to sanitize the name.
    */
   constructor(
     {prefix, suffix}: NameAffix<PrefixValue, SuffixValue> = {},
@@ -87,7 +87,7 @@ export abstract class CommonName<
    * @public
    * @param {PrefixValue} value The prefix of generic type variable `PrefixValue` constrained by the `string` type.
    * @param {?RegExp} [pattern] Optional pattern to sanitize prefix.
-   * @returns {this} 
+   * @returns {this} The `this` instance of `CommonName` child class.
    */
   public setPrefix(
     value: PrefixValue,
@@ -102,7 +102,7 @@ export abstract class CommonName<
    * @public
    * @param {SuffixValue} value The suffix of generic type variable `PrefixValue` constrained by the `string` type.
    * @param {?RegExp} [pattern] Optional pattern to sanitize suffix.
-   * @returns {this} 
+   * @returns {this} The `this` instance of `CommonName` child class
    */
   public setSuffix(
     value: SuffixValue,
