@@ -1,238 +1,162 @@
 // Class.
-import { Prefix, Suffix } from '../affix';
-import { CommonName } from './common-name.class';
-import { Wrap } from '@typescript-package/wrapper';
+import { NameCore } from './name-core.class';
+// Type.
+import { AffixedName } from '../type';
+// Interface.
+import { NameAffix } from '../interface';
 /**
- * @description
+ * @description The class `Name` is a generic class that represents a name with optional prefix and suffix.
  * @export
  * @class Name
- * @template {string} [Prefix=''] 
- * @template {string} [Word=string] 
- * @template {string} [Suffix=''] 
- * @extends {CommonName}
+ * @template {string} [PrefixValue=''] The type of `prefix` constrained by `string`. Defaults to empty.
+ * @template {string} [NameValue=string] The type of `name` constrained by `string`. Defaults to, `string`.
+ * @template {string} [SuffixValue=''] The type of `suffix` constrained by `string`. Defaults to empty.
+ * @template {string} [Delimiter=''] The type of `delimiter` constrained by `string`. Defaults to empty.
+ * @extends {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>}
  */
 export class Name<
-  Prefix extends string = '',
-  Word extends string = string,
-  Suffix extends string = '',
-> extends CommonName<Prefix, Suffix> {
+  PrefixValue extends string = '',
+  NameValue extends string = string,
+  SuffixValue extends string = '',
+  Delimiter extends string = ''
+> extends NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
   //#region static.
   /**
-   * @description Defines the name built from the `prefix`, `word` and `suffix`.
+   * @description Creates a new instance of the `Name` class.
    * @public
    * @static
-   * @template {string} [Prefix=''] The type of `prefix` constrained by `string`. Defaults to empty.
-   * @template {string} [Word=string] The type of `word` constrained by `string`. Defaults to, `string`.
-   * @template {string} [Suffix=''] The type of `suffix` constrained by `string`. Defaults to empty.
-   * @param {Prefix} prefix The prefix of generic type variable `Prefix` to define name.
-   * @param {Word} word The word of generic type variable `Word` to define name.
-   * @param {Suffix} suffix The suffix of generic type variable `Suffix` to define name.
-   * @returns {`${Prefix}${Word}${Suffix}`} The returned value is name of template type.
+   * @template {string} [PrefixValue=''] The type of `prefix` constrained by `string`. Defaults to empty.
+   * @template {string} [NameValue=string] The type of `name` constrained by `string`. Defaults to, `string`.
+   * @template {string} [SuffixValue=''] The type of `suffix` constrained by `string`. Defaults to empty.
+   * @template {string} [Delimiter=''] The type of `delimiter` constrained by `string`. Defaults to empty.
+   * @param {NameValue} [name='' as NameValue] 
+   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={
+   *       prefix: Name.prefix as PrefixValue,
+   *       suffix: Name.suffix as SuffixValue
+   *     }] 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix 
+   * @param {?Delimiter} [delimiter] 
+   * @param {?RegExp} [pattern] 
+   * @returns {Name<PrefixValue, NameValue, SuffixValue, Delimiter>} 
+   */
+  public static create<
+    PrefixValue extends string = '',
+    NameValue extends string = string,
+    SuffixValue extends string = '',
+    Delimiter extends string = ''
+  >(
+    name: NameValue = '' as NameValue,
+    { prefix, suffix }: NameAffix<PrefixValue, SuffixValue> = {
+      prefix: Name.prefix as PrefixValue,
+      suffix: Name.suffix as SuffixValue
+    },
+    delimiter?: Delimiter,
+    pattern?: RegExp
+  ): Name<PrefixValue, NameValue, SuffixValue, Delimiter> {
+    return new Name(name, { prefix, suffix }, delimiter, pattern);
+  }
+
+  /**
+   * @description Defines the full name built from the `prefix`, `name` and `suffix`.
+   * @public
+   * @static
+   * @template {string} [PrefixValue=''] The type of `prefix` constrained by `string`. Defaults to empty.
+   * @template {string} [NameValue=string] The type of `name` constrained by `string`. Defaults to, `string`.
+   * @template {string} [SuffixValue=''] The type of `suffix` constrained by `string`. Defaults to empty.
+   * @param {PrefixValue} prefix The prefix of generic type variable `Prefix` to define name.
+   * @param {NameValue} name The name of generic type variable `Name` to define name.
+   * @param {SuffixValue} suffix The suffix of generic type variable `Suffix` to define name.
+   * @param {boolean} [sanitize=true] The boolean value to sanitize the name.
+   * @param {Delimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
+   * @returns {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} The returned value is name of template type.
    */
   public static define<
-    Prefix extends string = '',
-    Word extends string = string,
-    Suffix extends string = '',
+    PrefixValue extends string = '',
+    NameValue extends string = string,
+    SuffixValue extends string = '',
+    Delimiter extends string = ''
   >(
-    prefix: Prefix,
-    word: Word,
-    suffix: Suffix
-  ): `${Prefix}${Word}${Suffix}` {
-    return new Wrap(
-      Prefix.sanitize(prefix) as Prefix,
-      Suffix.sanitize(suffix) as Suffix,
-      Name.sanitize(word) as Word
-    ).valueOf();
+    prefix: PrefixValue,
+    name: NameValue,
+    suffix: SuffixValue,
+    delimiter: Delimiter = Name.delimiter as Delimiter,
+    sanitize = true
+  ): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+    return new Name(
+      name,
+      {prefix, suffix},
+      delimiter,
+      sanitize ? Name.pattern : undefined
+    ).value;
   }
-
-  /**
-   * @description Sanitizes the name with a `filter`, by default `NAme.filter`.
-   * @public
-   * @param {string} value 
-   * @param {RegExp} [filter=Name.filter] 
-   * @returns {string} 
-   */
-  public static sanitize(value: string, filter: RegExp = Name.filter): string {
-    return value.replace(filter, '');
-  }
-
-  /**
-   * @description The default filter pattern used to sanitize the word, which removes characters that are not part of the valid characters for the word.
-   * @public
-   * @static
-   * @type {RegExp}
-   */
-  public static filter: RegExp = /[^a-zA-Z0-9$_]/g;
-
-  /**
-   * @description The default value for the prefix instance.
-   * @public
-   * @static
-   * @type {?string}
-   */
-  public static prefix?: string;
-
-  /**
-   * @description The default value for the suffix instance.
-   * @public
-   * @static
-   * @type {?string}
-   */
-  public static suffix?: string;
-  //#endregion static.
 
   //#region instance.
   /**
-   * @inheritdoc
+   * @description Returns the `string` tag representation of the `Name` class when used in `Object.prototype.toString.call(instance)`.
    * @public
    * @readonly
-   * @type {Prefix}
+   * @type {string}
    */
-  public override get prefix() {
-    return super.prefix;
+  public override get [Symbol.toStringTag]() {
+    return Name.name;
   }
-
-  /**
-   * @inheritdoc
-   * @public
-   * @readonly
-   * @type {Suffix}
-   */
-  public override get suffix() {
-    return super.suffix;
-  }
-
-  /**
-   * @description Returns the name built from `prefix`, `word`, and `suffix`.
-   * @public
-   * @readonly
-   * @type {`${Prefix}${Word}${Suffix}`}
-   */
-  public get value(): `${Prefix}${Word}${Suffix}` {
-    return this.#value;
-  }
-
-  /**
-   * @description Returns privately stored word between the `prefix`, and `suffix`.
-   * @public
-   * @readonly
-   * @type {Word}
-   */
-  public get word() {
-    return this.#word;
-  }
-
-  /**
-   * @description Privately stored filter of `RegExp` to sanitize the word.
-   * @type {RegExp}
-   */
-  #filter = Name.filter;
-
-  /**
-   * @description Privately stored name.
-   * @type {`${Prefix}${Word}${Suffix}`}
-   */
-  #value!: `${Prefix}${Word}${Suffix}`;
-
-  /**
-   * @description Privately stored word of name.
-   * @type {Word}
-   */
-  #word: Word = '' as Word;
   //#endregion instance
-  
+
   /**
    * Creates an instance of `Name`.
    * @constructor
-   * @param {Word} [word='' as Word] The required word for the name.
-   * @param {{prefix?: Prefix, suffix?: Suffix}} [param0={}] 
-   * @param {Prefix} param0.prefix Optional prefix of generic type variable `Prefix` type.
-   * @param {Suffix} param0.suffix Optional suffix of generic type variable `Suffix` type.
+   * @param {NameValue} [name] The name of generic type variable `Name`.
+   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={
+   *       prefix: Name.prefix as PrefixValue,
+   *       suffix: Name.suffix as SuffixValue
+   *     }] 
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
+   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`.
+   * @param {?Delimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
+   * @param {?RegExp} [pattern] The pattern to use for sanitizing the name.
    */
   constructor(
-    word: Word = '' as Word,
-    {prefix, suffix}: {prefix?: Prefix, suffix?: Suffix} = {}
+    name: NameValue,
+    { prefix, suffix }: NameAffix<PrefixValue, SuffixValue>,
+    delimiter?: Delimiter,
+    pattern?: RegExp
   ) {
-    super({ prefix, suffix });
-    this.set(word, {prefix, suffix});
-    this.update();
+    super(name, { prefix, suffix }, delimiter, pattern);
   }
 
   /**
-   * @description
+   * @description Returns the new instance of `Name`, built from the `prefix`, `name`, and `suffix`.
    * @public
-   * @param {Word} word 
-   * @param {{prefix?: Prefix, suffix?: Suffix  }} [param0={}] 
-   * @param {Prefix} param0.prefix 
-   * @param {Suffix} param0.suffix 
-   * @returns {`${Prefix}${Word}${Suffix}`} 
+   * @template {string} [WithPrefix=PrefixValue] The type of `prefix` constrained by `string`. Defaults to empty.
+   * @template {string} [WithName=string] The type of `name` constrained by `string`. Defaults to, `string`.
+   * @template {string} [WithSuffix=SuffixValue] The type of `suffix` constrained by `string`. Defaults to empty.
+   * @template {string} [WithDelimiter=Delimiter] 
+   * @param {WithName} name The name of generic type variable `WithName` to define name.
+   * @param {NameAffix<WithPrefix, WithSuffix>} [param0={}] The affixes for the new name.
+   * @param {NameAffix<WithPrefix, WithSuffix>} param0.prefix The prefix for the new name.
+   * @param {NameAffix<WithPrefix, WithSuffix>} param0.suffix The suffix for the new name.
+   * @param {?WithDelimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
+   * @returns {Name<WithPrefix, WithName, WithSuffix, WithDelimiter>} 
    */
-  public define(
-    word: Word,
-    {prefix, suffix}: {prefix?: Prefix, suffix?: Suffix  } = {}
-  ): `${Prefix}${Word}${Suffix}` {
-    return Name.define(
-      prefix || '' as Prefix,
-      word,
-      suffix || '' as Suffix
+  public with<
+    WithPrefix extends string = PrefixValue,
+    WithName extends string = string,
+    WithSuffix extends string = SuffixValue,
+    WithDelimiter extends string = Delimiter
+  >(
+    name: WithName,
+    { prefix, suffix }: NameAffix<WithPrefix, WithSuffix> = {},
+    delimiter?: WithDelimiter
+  ): Name<WithPrefix, WithName, WithSuffix, WithDelimiter> {
+    return new Name(
+      name,
+      {
+        prefix: (prefix ?? super.prefix.value) as WithPrefix,
+        suffix: (suffix ?? super.suffix.value) as WithSuffix
+      },
+      delimiter,
+      super.pattern
     );
-  }
-
-  /**
-   * @description Sets the name with prefix, word and suffix.
-   * @public
-   * @param {Word} word 
-   * @param {{prefix?: Prefix, suffix?: Suffix  }} [param0={}] 
-   * @param {Prefix} param0.prefix 
-   * @param {Suffix} param0.suffix 
-   * @returns {this} 
-   */
-  public set(
-    word: Word,
-    {prefix, suffix}: {prefix?: Prefix, suffix?: Suffix  } = {}
-  ): this {
-    this.setWord(word);
-    typeof prefix !== 'undefined' && super.setPrefix(prefix);
-    typeof suffix !== 'undefined' && super.setSuffix(suffix);
-    return this;
-  }
-
-  /**
-   * @description Sets the filter to sanitize the word.
-   * @public
-   * @param {RegExp} filter The filter of `RegExp` to sanitize the word.
-   */
-  public setFilter(filter: RegExp): this {
-    filter instanceof RegExp && (this.#filter = filter);
-    return this;
-  }
-
-  /**
-   * @description Sets the word between the `prefix` and `suffix`.
-   * @public
-   * @param {Word} word The word of generic type variable `Word`.
-   * @param {RegExp} [filter=this.#filter] The filter of `RegExp` to sanitize the `word`. Defaults to `this.#filter`.
-   * @returns {this} 
-   */
-  public setWord(
-    word: Word,
-    filter: RegExp = this.#filter
-  ): this {
-    typeof word === 'string' && (this.#word = word.replace(filter, '') as Word);
-    return this;
-  }
-
-  /**
-   * @description Updates the name with a stored prefix, word, and suffix.
-   * @public
-   * @returns {this} 
-   */
-  public update(): this {
-    this.#value = Name.define(
-      super.prefix.value,
-      this.#word,
-      super.suffix.value
-    );
-    return this;
   }
 }
