@@ -9,7 +9,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "peerDependencies": {
-    "@typescript-package/wrapper": "^0.0.1"
+    "@typescript-package/affix": "^2.1.0"
   },
   "scripts": {
     "prepublishOnly": "npm run pkg && npm run clean",
