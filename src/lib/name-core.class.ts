@@ -6,16 +6,16 @@ import { AffixedName } from '../type';
 // Interface.
 import { NameAffix, NameConfiguration, NameOptions } from '../interface';
 /**
- * @description The `NameCommon` class is an abstract class that provides a common structure for creating names with prefixes and suffixes.
+ * @description The `NameCore` class is an abstract class that provides a common structure for creating names with prefixes and suffixes.
  * @export
  * @abstract
- * @class NameCommon
+ * @class NameCore
  * @template {string} [PrefixValue=string] The type of the prefix value, constrained by a `string` type.
  * @template {string} [NameValue=string] The type of the name value, constrained by a `string` type.
  * @template {string} [SuffixValue=string] The type of the suffix value, constrained by a `string` type.
  * @template {string} [Delimiter=string] The type of the delimiter, constrained by a `string` type.
  */
-export abstract class NameCommon<
+export abstract class NameCore<
   PrefixValue extends string = string,
   NameValue extends string = string,
   SuffixValue extends string = string,
@@ -23,13 +23,13 @@ export abstract class NameCommon<
 > extends NamePattern {
   //#region static.
   /**
-   * @description
+   * @description The static method `compose` creates a composed name from the provided parts.
    * @public
    * @static
-   * @template {string} [PrefixValue=string] 
-   * @template {string} [NameValue=string] 
-   * @template {string} [SuffixValue=string] 
-   * @template {string} [Delimiter=string] 
+   * @template {string} [PrefixValue=string] The type of the prefix value, constrained by a `string` type.
+   * @template {string} [NameValue=string] The type of the name value, constrained by a `string` type.
+   * @template {string} [SuffixValue=string] The type of the suffix value, constrained by a `string` type.
+   * @template {string} [Delimiter=string] The type of the delimiter, constrained by a `string` type.
    * @param {{
    *       delimiter?: Delimiter,
    *       name?: NameValue,
@@ -68,7 +68,7 @@ export abstract class NameCommon<
   }
 
   /**
-   * @description
+   * @description The default delimiter used to separate name parts.
    * @public
    * @static
    * @type {string}
@@ -98,7 +98,7 @@ export abstract class NameCommon<
    * @type {string}
    */
   public override get [Symbol.toStringTag]() {
-    return NameCommon.name;
+    return NameCore.name;
   }
   //#endregion
   //#region instance.
@@ -113,7 +113,7 @@ export abstract class NameCommon<
   }
 
   /**
-   * @description
+   * @description Returns the `NameConfiguration` object containing the prefix, suffix, name, and delimiter.
    * @public
    * @readonly
    * @type {NameConfiguration<PrefixValue, NameValue, SuffixValue, Delimiter>}
@@ -224,8 +224,8 @@ export abstract class NameCommon<
     pattern?: RegExp
   ) {
     super(pattern);
-    this.#name = NameCommon.sanitize(name, pattern);
-    this.#delimiter = delimiter ?? NameCommon.delimiter as Delimiter;
+    this.#name = NameCore.sanitize(name, pattern);
+    this.#delimiter = delimiter ?? NameCore.delimiter as Delimiter;
     this.#prefix = prefix instanceof Prefix
       ? prefix
       : typeof prefix === 'object' 
@@ -248,17 +248,17 @@ export abstract class NameCommon<
    * @param {SetNameOptions<PrefixValue, NameValue, SuffixValue, Delimiter>} param0.pattern The pattern to use for sanitizing the name.
    * @param {SetNameOptions<PrefixValue, NameValue, SuffixValue, Delimiter>} param0.prefix The prefix for the new name.
    * @param {SetNameOptions<PrefixValue, NameValue, SuffixValue, Delimiter>} param0.suffix The suffix for the new name.
-   * @returns {NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter>} 
+   * @returns {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
   public set(
     { delimiter, name, pattern, prefix, suffix }: NameOptions<PrefixValue, NameValue, SuffixValue, Delimiter> = {}
-  ): NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  ): NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
     typeof prefix === 'string' && this.prefix.set(prefix);
     typeof suffix === 'string' && this.suffix.set(suffix);
     pattern && super.setPattern(pattern);
     name && this.setName(name);
     delimiter && this.setDelimiter(delimiter);
-    this.#compose();
+    this.updateValue();
     return this;
   }
 
@@ -296,13 +296,10 @@ export abstract class NameCommon<
     const resolvedName = name ?? this.#name;
     const resolvedSuffix = suffix ?? this.#suffix.value;
     const resolvedDelimiter = delimiter ?? this.#delimiter;
-
     const parts = [];
-
     resolvedPrefix && parts.push(resolvedPrefix);
     parts.push(resolvedName);
     resolvedSuffix && parts.push(resolvedSuffix);
-
     return parts.join(resolvedDelimiter) as AffixedName<
       CustomPrefix,
       CustomName,
@@ -315,11 +312,11 @@ export abstract class NameCommon<
    * @description
    * @public
    * @param {Delimiter} value 
-   * @returns {NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter>} 
+   * @returns {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
-  public setDelimiter(value: Delimiter): NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  public setDelimiter(value: Delimiter): NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
     this.#delimiter = value;
-    this.#compose();
+    this.updateValue();
     return this;
   }
 
@@ -327,11 +324,11 @@ export abstract class NameCommon<
    * @description Sets the `name` between the `prefix`, and `suffix`.
    * @public
    * @param {NameValue} name The name of generic type variable `Name`.
-   * @returns {NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `Name`.
+   * @returns {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `Name`.
    */
-  public setName(name: NameValue): NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter> {
-    (this.#name = NameCommon.sanitize(name, super.pattern));
-    this.#compose();
+  public setName(name: NameValue): NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
+    (this.#name = NameCore.sanitize(name, super.pattern));
+    this.updateValue();
     return this;
   }
 
@@ -340,14 +337,14 @@ export abstract class NameCommon<
    * @public
    * @param {PrefixValue} value The prefix of generic type variable `PrefixValue` constrained by the `string` type.
    * @param {?RegExp} [pattern] Optional pattern to sanitize prefix.
-   * @returns {NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `CommonName` child class.
+   * @returns {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `CommonName` child class.
    */
   public setPrefix(
     value: PrefixValue,
     pattern?: RegExp
-  ): NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  ): NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
     this.#prefix.set(value, pattern);
-    this.#compose();
+    this.updateValue();
     return this;
   }
 
@@ -356,14 +353,14 @@ export abstract class NameCommon<
    * @public
    * @param {SuffixValue} value The suffix of generic type variable `PrefixValue` constrained by the `string` type.
    * @param {?RegExp} [pattern] Optional pattern to sanitize suffix.
-   * @returns {NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `CommonName` child class.
+   * @returns {NameCore<PrefixValue, NameValue, SuffixValue, Delimiter>} The `this` instance of `CommonName` child class.
    */
   public setSuffix(
     value: SuffixValue,
     pattern?: RegExp
-  ): NameCommon<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  ): NameCore<PrefixValue, NameValue, SuffixValue, Delimiter> {
     this.#suffix.set(value, pattern);
-    this.#compose();
+    this.updateValue();
     return this;
   }
 
@@ -391,11 +388,19 @@ export abstract class NameCommon<
   }
 
   /**
+   * @description Updates the composed value.
+   * @private
+   */
+  private updateValue(): void {
+    this.#value = this.#compose();
+  }
+
+  /**
    * @description Returns composed name from the `prefix`, `name`, `delimiter` and `suffix` and assign it to the `#value`.
    * @returns {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
-  #compose() {
-    return NameCommon.compose({
+  #compose(): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+    return NameCore.compose({
       delimiter: this.#delimiter,
       name: this.#name,
       prefix: this.#prefix.value,
