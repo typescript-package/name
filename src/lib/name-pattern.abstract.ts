@@ -56,10 +56,10 @@ export abstract class NamePattern {
   /**
    * Creates an instance of child class.
    * @constructor
-   * @param {RegExp} [pattern=NamePattern.pattern] 
-   */  
-  constructor(pattern: RegExp = NamePattern.pattern) {
-    pattern instanceof RegExp && this.setPattern(pattern);
+   * @param {?RegExp} [pattern] 
+   */
+  constructor(pattern?: RegExp) {
+    this.#pattern = pattern;
   }
 
   /**
@@ -68,7 +68,7 @@ export abstract class NamePattern {
    * @param {RegExp} pattern The pattern of `RegExp` to sanitize the name.
    * @returns {this} 
    */
-  public setPattern(pattern: RegExp): this {
+  public setPattern(pattern: RegExp): NamePattern {
     pattern instanceof RegExp && (this.#pattern = pattern);
     return this;
   }
