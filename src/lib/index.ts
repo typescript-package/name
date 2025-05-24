@@ -1,5 +1,5 @@
 // Abstract.
-export { NameCore } from "./name-core.class";
+export { NameCore } from "./name-core.abstract";
 export { NamePattern } from "./name-pattern.abstract";
 // Class.
 export { Name } from "./name.class";
