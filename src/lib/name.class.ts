@@ -1,5 +1,5 @@
 // Class.
-import { NameCore } from './name-core.class';
+import { NameCore } from './name-core.abstract';
 // Type.
 import { AdfixedName } from '@typedly/name';
 // Interface.
