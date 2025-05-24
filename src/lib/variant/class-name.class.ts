@@ -1,5 +1,5 @@
 // Class.
-import { Name } from "./name.class";
+import { Name } from "../name.class";
 
 export class ClassName<
   NameValue extends string = string,

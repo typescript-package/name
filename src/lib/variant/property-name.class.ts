@@ -1,14 +1,14 @@
-import { Name } from './name.class';
+import { Name } from '../name.class';
 
 export class PropertyName<
-  Prefix extends string = '',
+  PrefixValue extends string = '',
   NameValue extends string = string,
-  Suffix extends string = '',
+  SuffixValue extends string = '',
   Delimiter extends string = ''
-> extends Name<Prefix, NameValue, Suffix, Delimiter> {
+> extends Name<PrefixValue, NameValue, SuffixValue, Delimiter> {
   constructor(
     name?: NameValue,
-    {prefix, suffix}: {prefix?: Prefix, suffix?: Suffix} = {},
+    {prefix, suffix}: {prefix?: PrefixValue, suffix?: SuffixValue} = {},
     delimiter?: Delimiter
   ) {
     super(name || '' as NameValue, {prefix, suffix}, delimiter, /[^a-zA-Z$_]/g);
