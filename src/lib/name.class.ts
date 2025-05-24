@@ -1,9 +1,9 @@
 // Class.
 import { NameCore } from './name-core.class';
 // Type.
-import { AffixedName } from '../type';
+import { AdfixedName } from '@typedly/name';
 // Interface.
-import { NameAffix } from '../interface';
+import { NameAdfix } from '@typedly/name';
 /**
  * @description The class `Name` is a generic class that represents a name with optional prefix and suffix.
  * @export
@@ -29,15 +29,12 @@ export class Name<
    * @template {string} [NameValue=string] The type of `name` constrained by `string`. Defaults to, `string`.
    * @template {string} [SuffixValue=''] The type of `suffix` constrained by `string`. Defaults to empty.
    * @template {string} [Delimiter=''] The type of `delimiter` constrained by `string`. Defaults to empty.
-   * @param {NameValue} [name='' as NameValue] 
-   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={
-   *       prefix: Name.prefix as PrefixValue,
-   *       suffix: Name.suffix as SuffixValue
-   *     }] 
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix 
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix 
-   * @param {?Delimiter} [delimiter] 
-   * @param {?RegExp} [pattern] 
+   * @param {NameValue} [name='' as NameValue] The name of generic type variable `NameValue` to define name.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} [param0={}] The adfixes to apply to the name.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.prefix The prefix to apply to the name.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.suffix The suffix to apply to the name.
+   * @param {?Delimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
+   * @param {?RegExp} [pattern] The pattern to use for sanitizing the name.
    * @returns {Name<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
   public static create<
@@ -47,14 +44,19 @@ export class Name<
     Delimiter extends string = ''
   >(
     name: NameValue = '' as NameValue,
-    { prefix, suffix }: NameAffix<PrefixValue, SuffixValue> = {
-      prefix: Name.prefix as PrefixValue,
-      suffix: Name.suffix as SuffixValue
-    },
+    { prefix, suffix }: NameAdfix<PrefixValue, SuffixValue> = {},
     delimiter?: Delimiter,
     pattern?: RegExp
   ): Name<PrefixValue, NameValue, SuffixValue, Delimiter> {
-    return new Name(name, { prefix, suffix }, delimiter, pattern);
+    return new Name(
+      name, 
+      {
+        prefix: prefix ?? Name.prefix as PrefixValue,
+        suffix: suffix ?? Name.suffix as SuffixValue,
+      },
+      delimiter,
+      pattern
+    );
   }
 
   /**
@@ -69,7 +71,7 @@ export class Name<
    * @param {SuffixValue} suffix The suffix of generic type variable `Suffix` to define name.
    * @param {boolean} [sanitize=true] The boolean value to sanitize the name.
    * @param {Delimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
-   * @returns {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} The returned value is name of template type.
+   * @returns {AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} The returned value is name of template type.
    */
   public static define<
     PrefixValue extends string = '',
@@ -82,7 +84,7 @@ export class Name<
     suffix: SuffixValue,
     delimiter: Delimiter = Name.delimiter as Delimiter,
     sanitize = true
-  ): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  ): AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
     return new Name(
       name,
       {prefix, suffix},
@@ -104,21 +106,18 @@ export class Name<
   //#endregion instance
 
   /**
-   * Creates an instance of `Name`.
+   * Creates an instance of `Name`. 
    * @constructor
    * @param {NameValue} [name] The name of generic type variable `Name`.
-   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={
-   *       prefix: Name.prefix as PrefixValue,
-   *       suffix: Name.suffix as SuffixValue
-   *     }] 
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0 
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`.
    * @param {?Delimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
    * @param {?RegExp} [pattern] The pattern to use for sanitizing the name.
    */
   constructor(
     name: NameValue,
-    { prefix, suffix }: NameAffix<PrefixValue, SuffixValue>,
+    { prefix, suffix }: NameAdfix<PrefixValue, SuffixValue>,
     delimiter?: Delimiter,
     pattern?: RegExp
   ) {
@@ -133,9 +132,9 @@ export class Name<
    * @template {string} [WithSuffix=SuffixValue] The type of `suffix` constrained by `string`. Defaults to empty.
    * @template {string} [WithDelimiter=Delimiter] 
    * @param {WithName} name The name of generic type variable `WithName` to define name.
-   * @param {NameAffix<WithPrefix, WithSuffix>} [param0={}] The affixes for the new name.
-   * @param {NameAffix<WithPrefix, WithSuffix>} param0.prefix The prefix for the new name.
-   * @param {NameAffix<WithPrefix, WithSuffix>} param0.suffix The suffix for the new name.
+   * @param {NameAdfix<WithPrefix, WithSuffix>} [param0={}] The affixes for the new name.
+   * @param {NameAdfix<WithPrefix, WithSuffix>} param0.prefix The prefix for the new name.
+   * @param {NameAdfix<WithPrefix, WithSuffix>} param0.suffix The suffix for the new name.
    * @param {?WithDelimiter} [delimiter] The delimiter to use between the prefix, name, and suffix.
    * @returns {Name<WithPrefix, WithName, WithSuffix, WithDelimiter>} 
    */
@@ -146,7 +145,7 @@ export class Name<
     WithDelimiter extends string = Delimiter
   >(
     name: WithName,
-    { prefix, suffix }: NameAffix<WithPrefix, WithSuffix> = {},
+    { prefix, suffix }: NameAdfix<WithPrefix, WithSuffix> = {},
     delimiter?: WithDelimiter
   ): Name<WithPrefix, WithName, WithSuffix, WithDelimiter> {
     return new Name(
