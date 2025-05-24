@@ -2,9 +2,9 @@
 import { Prefix, Suffix } from '@typescript-package/affix';
 import { NamePattern } from './name-pattern.abstract';
 // Type.
-import { AffixedName } from '../type';
+import { AdfixedName } from '@typedly/name';
 // Interface.
-import { NameAffix, NameConfiguration, NameOptions } from '../interface';
+import { NameAdfix, NameConfiguration, NameOptions } from '@typedly/name';
 /**
  * @description The `NameCore` class is an abstract class that provides a common structure for creating names with prefixes and suffixes.
  * @export
@@ -40,7 +40,7 @@ export abstract class NameCore<
    * @param {NameValue} param0.name 
    * @param {PrefixValue} param0.prefix 
    * @param {SuffixValue} param0.suffix 
-   * @returns {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} 
+   * @returns {AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
   public static compose<
     PrefixValue extends string = string,
@@ -54,12 +54,12 @@ export abstract class NameCore<
       prefix?: PrefixValue,
       suffix?: SuffixValue,
     } = {}
-  ): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  ): AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
     const parts = [];
     prefix && parts.push(prefix);
     parts.push(name);
     suffix && parts.push(suffix);
-    return parts.join(delimiter) as AffixedName<
+    return parts.join(delimiter) as AdfixedName<
       PrefixValue,
       NameValue,
       SuffixValue,
@@ -170,9 +170,9 @@ export abstract class NameCore<
    * @description Returns the value, built from the `prefix`, `name`, and `suffix`.
    * @public
    * @readonly
-   * @type {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>}
+   * @type {AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>}
    */
-  public get value(): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  public get value(): AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
     return this.#value;
   }
 
@@ -202,24 +202,24 @@ export abstract class NameCore<
 
   /**
    * @description
-   * @type {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>}
+   * @type {AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>}
    */
-  #value: AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>;
+  #value: AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>;
   //#endregion
 
   /**
    * Creates an instance of `CommonName` child class.
    * @constructor
    * @param {NameValue} name The name of generic type variable `Name` constrained by the `string` type.
-   * @param {NameAffix<PrefixValue, SuffixValue>} [param0={}] The object containing the prefix and suffix values.
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
-   * @param {NameAffix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} [param0={}] The object containing the prefix and suffix values.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.prefix The default value for the instance of `Prefix`.
+   * @param {NameAdfix<PrefixValue, SuffixValue>} param0.suffix The default value for the instance of `Suffix`.
    * @param {Delimiter} [delimiter] The delimiter to separate the prefix and suffix.
    * @param {?RegExp} [pattern] The pattern to sanitize the name.
    */
   constructor(
     name: NameValue,
-    {prefix, suffix}: NameAffix<PrefixValue, SuffixValue> = {},
+    {prefix, suffix}: NameAdfix<PrefixValue, SuffixValue> = {},
     delimiter?: Delimiter,
     pattern?: RegExp
   ) {
@@ -277,7 +277,7 @@ export abstract class NameCore<
    * @param {CustomName} param0.name 
    * @param {CustomPrefix} param0.prefix 
    * @param {CustomSuffix} param0.suffix 
-   * @returns {AffixedName<CustomPrefix, CustomName, CustomSuffix, CustomDelimiter>} 
+   * @returns {AdfixedName<CustomPrefix, CustomName, CustomSuffix, CustomDelimiter>} 
    */
   public compose<
     CustomPrefix extends PrefixValue | string = PrefixValue,
@@ -291,7 +291,7 @@ export abstract class NameCore<
       prefix?: CustomPrefix,
       suffix?: CustomSuffix,
     } = {}
-  ): AffixedName<CustomPrefix, CustomName, CustomSuffix, CustomDelimiter> {
+  ): AdfixedName<CustomPrefix, CustomName, CustomSuffix, CustomDelimiter> {
     const resolvedPrefix = prefix ?? this.#prefix.value;
     const resolvedName = name ?? this.#name;
     const resolvedSuffix = suffix ?? this.#suffix.value;
@@ -300,7 +300,7 @@ export abstract class NameCore<
     resolvedPrefix && parts.push(resolvedPrefix);
     parts.push(resolvedName);
     resolvedSuffix && parts.push(resolvedSuffix);
-    return parts.join(resolvedDelimiter) as AffixedName<
+    return parts.join(resolvedDelimiter) as AdfixedName<
       CustomPrefix,
       CustomName,
       CustomSuffix,
@@ -397,9 +397,9 @@ export abstract class NameCore<
 
   /**
    * @description Returns composed name from the `prefix`, `name`, `delimiter` and `suffix` and assign it to the `#value`.
-   * @returns {AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} 
+   * @returns {AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter>} 
    */
-  #compose(): AffixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
+  #compose(): AdfixedName<PrefixValue, NameValue, SuffixValue, Delimiter> {
     return NameCore.compose({
       delimiter: this.#delimiter,
       name: this.#name,
