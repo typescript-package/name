@@ -1,4 +1,9 @@
-
+/**
+ * @description The class that represents the name pattern.
+ * @export
+ * @abstract
+ * @class NamePattern
+ */
 export abstract class NamePattern {
   //#region static.
   /**
