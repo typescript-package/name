@@ -9,8 +9,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "peerDependencies": {
-    "@typedly/affix": "^2.1.0",
-    "@typedly/name": "^1.0.0",
+    "@typedly/affix": "^2.2.0",
+    "@typedly/name": "^2.0.0",
     "@typescript-package/affix": "^2.1.0"
   },
   "scripts": {
